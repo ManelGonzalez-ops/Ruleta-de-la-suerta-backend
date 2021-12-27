@@ -1,27 +1,68 @@
 const express = require("express")
-
-
+const cors = require("cors")
+const bodyParser = require("body-parser")
+const Ruleta = require("./GameLogic")
 const app = express()
-
-app.get("/", (req, res) => {
-    return res.send("comemela")
-})
+app.use(cors())
+app.use(express.json())
 
 
-const content = "buenas"
-const eventName = "mensajeando"
+let ruleta;
+
 let error = false
-const hayError = () => {
 
-    setInterval(() => {
-        error = !error
-    }, 3000)
-    return error
+let res = {}
+const setRes = (resp) => {
+    res = resp
 }
 
-app.get("/choose", (req, res) => {
-
+app.post("/startGame", (req, resp) => {
+    console.log("hit start")
+    ruleta = new Ruleta()
+    const { players, rounds } = req.body
+    const { firstEnigma, currentPlayer, totalRounds } = ruleta.startGame(players, rounds)
+    const mobileData = { firstEnigma, currentPlayer, totalRounds }
+    res.write(`data: ${JSON.stringify(mobileData)}` + "\n\n");
+    resp.json({ firstEnigma, currentPlayer, totalRounds })
 })
+
+
+app.get("/choice/:letter", (req, resp) => {
+    console.log("letter clicked")
+    const { letter } = req.params
+    const { success, error, roundInfo } = ruleta.handleTurn(letter)
+    if (roundInfo.roundFinished) {
+
+    }
+    console.log(letter, "LETRA")
+    const mobileData = {
+        success, error, roundInfo,
+        letter,
+    }
+    //disable when testing whitout mobile
+    res.write(`data: ${JSON.stringify(mobileData)}` + "\n\n");
+
+    resp.send({ success, error, roundInfo })
+})
+app.get("/resolve", (req, resp) => {
+    console.log("letter clicked")
+    ruleta.resolvePanel()
+    const roundInfo = ruleta.roundInfo()
+    console.log(roundInfo, "lapuroundinfo")
+ 
+
+    const mobileData = {
+        success: true, error: null, roundInfo,
+    }
+    //disable when testing whitout mobile
+    res.write(`data: ${JSON.stringify(mobileData)}` + "\n\n");
+
+    resp.send({ success: true, error: null, roundInfo })
+})
+
+
+
+
 
 const prepareStream = (res) => {
     res.setHeader('Cache-Control', 'no-cache');
@@ -31,6 +72,7 @@ const prepareStream = (res) => {
     res.flushHeaders();
 }
 
+
 app.get('/stream', (req, res) => {
     console.log("reqested")
     res.setHeader('Cache-Control', 'no-cache');
@@ -38,29 +80,18 @@ app.get('/stream', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders(); // flush the headers to establish SSE with client
-
-    let counter = 0;
-    let interValID = setInterval(() => {
-        const error = hayError() ? "bien" : "mal"
-        console.log(error, "err")
-        counter++;
-        if (counter >= 10) {
-            clearInterval(interValID);
-            res.end(); // terminates SSE session
-            return;
-        }
-        res.write(`data: ${error}` + "\n\n");// res.write() instead of res.send() añadir \n\n al final si no no fucniona xd
-    }, 1000);
-
-    // If client closes connection, stop sending events
+    setRes(res)
     res.on('close', () => {
         console.log('client dropped me');
-        clearInterval(interValID);
+        //clearInterval(interValID);
         res.end();
     });
 });
+
 
 const port = 8001
 app.listen(port, () => {
     console.log("app running in port", port)
 })
+
+
