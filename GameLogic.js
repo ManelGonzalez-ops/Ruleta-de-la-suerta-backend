@@ -31,13 +31,14 @@ class Ruleta {
 
         this.totalRounds = rounds
         this.currentRound = 1
-        this.setQuestions()
-        //this.setFakeQuestions()
+        //this.setQuestions()
+        this.setFakeQuestions()
         this.currentQuestion = this.gameQuestions[0]
         this.makeScapedAnswer(this.currentQuestion)
         //console.log("first question")
         return { firstEnigma: this.gameQuestions[0], currentPlayer: this.currentPlayer, totalRounds: this.totalRounds }
     }
+    
 
     setQuestions = () => {
         const allEnigmas = getDataset()
@@ -54,10 +55,10 @@ class Ruleta {
     setFakeQuestions = () => {
         this.gameQuestions = [
             //{ answer: "Parchís, Oca y Escalera", question: "que as" },
-            { answer: "hola", question: "prueba0" },
-            { answer: "yo soy tu padre", question: "prueba1" },
-            { answer: "los peces son amigos no comida", question: "prueba2" },
-            { answer: "mapa", question: "que as" },
+            { answer: "zero", question: "0ou" },
+            { answer: "uno", question: "1" },
+            { answer: "dos", question: "2" },
+            { answer: "tres", question: "3" },
         ]
     }
 
@@ -76,7 +77,6 @@ class Ruleta {
             this.lettersCalled = []
             this.currentQuestion = this.nextQuestion
             this.nextPlayer = this.currentPlayer
-            this.currentRound += 1
             this.nextQuestion = null
             this.nextPlayer = null
             //in case someone resolved the previous panel
@@ -108,7 +108,6 @@ class Ruleta {
             this.roundFinished = false
         }
         let ocurrences = 0
-        this.lettersCalled.push(letter)
         this.scapedAnswer.forEach(_letter => {
             if (_letter === removeAccents(letter)) {
                 console.log("coincide")
@@ -120,7 +119,7 @@ class Ruleta {
         if (!ocurrences) {
             return { isValid: false }
         }
-
+        this.lettersCalled.push(letter)
         return { isValid: true }
     }
 
@@ -170,6 +169,7 @@ class Ruleta {
 
     }
 
+    
 
     prepareNextRound = () => {
         if (this.totalRounds === this.currentRound - 1) {
@@ -177,6 +177,7 @@ class Ruleta {
         }
         this.roundFinished = true
         this.nextQuestion = this.gameQuestions[this.currentRound]
+        this.currentRound += 1
         this.makeScapedAnswer(this.nextQuestion)
         this.nextPlayer = this.selectNextPlayer()
 

@@ -38,6 +38,7 @@ app.get("/choice/:letter", (req, resp) => {
     console.log("letter clicked")
     const { letter } = req.params
     const { success, error, roundInfo } = ruleta.handleTurn(letter)
+    console.log(roundInfo, "roundInf")
     if (roundInfo.roundFinished) {
 
     }
@@ -46,6 +47,8 @@ app.get("/choice/:letter", (req, resp) => {
         success, error, roundInfo,
         letter,
     }
+
+
     //disable when testing whitout mobile
     res.write(`data: ${JSON.stringify(mobileData)}` + "\n\n");
 
