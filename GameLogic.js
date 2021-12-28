@@ -31,8 +31,8 @@ class Ruleta {
 
         this.totalRounds = rounds
         this.currentRound = 1
-        //this. ()
-        this.setFakeQuestions()
+        this.setQuestions()
+        //this.setFakeQuestions()
         this.currentQuestion = this.gameQuestions[0]
         this.makeScapedAnswer(this.currentQuestion)
         //console.log("first question")
