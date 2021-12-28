@@ -54,8 +54,9 @@ class Ruleta {
     setFakeQuestions = () => {
         this.gameQuestions = [
             //{ answer: "Parchís, Oca y Escalera", question: "que as" },
-            { answer: "!áve, a là meca¡", question: "que es" },
-            { answer: "hola", question: "que as" },
+            { answer: "hola", question: "prueba0" },
+            { answer: "yo soy tu padre", question: "prueba1" },
+            { answer: "los peces son amigos no comida", question: "prueba2" },
             { answer: "mapa", question: "que as" },
         ]
     }
