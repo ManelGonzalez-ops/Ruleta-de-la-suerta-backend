@@ -6,7 +6,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
     res.header("Access-Control-Allow-Credentials", true);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -56,7 +56,7 @@ app.get("/resolve", (req, resp) => {
     ruleta.resolvePanel()
     const roundInfo = ruleta.roundInfo()
     console.log(roundInfo, "lapuroundinfo")
- 
+
 
     const mobileData = {
         success: true, error: null, roundInfo,
@@ -88,6 +88,9 @@ app.get('/stream', (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders(); // flush the headers to establish SSE with client
     setRes(res)
+    let interval = setInterval(() => {
+        res.write(`data: ${JSON.stringify({ keepAlive: true })}` + "\n\n");
+    }, 5000)
     res.on('close', () => {
         console.log('client dropped me');
         //clearInterval(interValID);
@@ -95,6 +98,10 @@ app.get('/stream', (req, res) => {
     });
 });
 
+const avoidIdleError = async () => {
+
+    await new Promise(resolve => setTimeout(1000, resolve))
+}
 
 const port = process.env.PORT || 8001
 app.listen(port, () => {
