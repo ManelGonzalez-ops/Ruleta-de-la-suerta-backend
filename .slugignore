@@ -1,0 +1,4 @@
+# files of the repo that are not gonna be pushed to heroku
+
+/rnative
+/frontend

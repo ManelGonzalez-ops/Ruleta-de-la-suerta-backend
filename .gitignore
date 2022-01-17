@@ -10,9 +10,8 @@
 
 # production
 /build
-/prueba2
-/frontend
-/rnative
+# /frontend
+# /rnative
 
 # misc
 .DS_Store
